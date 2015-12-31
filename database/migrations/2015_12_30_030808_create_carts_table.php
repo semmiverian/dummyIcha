@@ -16,7 +16,7 @@ class CreateCartsTable extends Migration
             $table->increments('id');
             $table->integer('user_id');
             $table->integer('product_id');
-            $table->integer('company_id');
+            $table->enum('status',['booked','pending'])->default('pending');
             $table->timestamps();
 
             // $table->foreign('user_id')

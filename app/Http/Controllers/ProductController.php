@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-use App\Product;
 use App\Cart;
+use App\Http\Controllers\Controller;
+use App\Http\Requests;
+use App\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class ProductController extends Controller
 {
@@ -98,7 +99,36 @@ class ProductController extends Controller
 
     public function addToCart($id){
       $produk=Product::findOrFail($id);
-      $addToCart = Cart::create(['product_id'=>$produk->id]);
+      Auth::loginUsingId(1);
+      $user = Auth::user()->id;
+      $addToCart = Cart::create(['product_id'=>$produk->id,
+                                'user_id'=>$user]);
       return 'Berhasil Memasukan data ke cart list';
+    }
+
+
+    /*
+    * A Function to retrieve all Cart that the logged in user have
+    */
+
+    public function myCart(){
+        Auth::loginUsingId(1);
+        // $currentUser = Auth::user();
+        // $cartList = $currentUser->cartProductId();
+        $currUserId = Auth::user()->id;
+        $cartList = Cart::cartList($currUserId)->get();
+        return view ('myCart',compact('cartList'));
+        // return view('myCart',compact('cartList'));
+    }
+
+    /**
+    * Finalize the booked by user
+    * Change status from pending to booked
+    * @param int $id
+    */
+
+    public function finalizeBooked($id){
+        Cart::finalizeCart($id);
+        return 'cart finalized';
     }
 }

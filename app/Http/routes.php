@@ -21,6 +21,15 @@ Route::resource('produk','ProductController');
 
 Route::post('addToCart/{id}','ProductController@addToCart');
 
+
+Route::get('mycart','ProductController@myCart');
+
+Route::get('bookedProduct/{id}','ProductController@finalizeBooked');
+
+
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -34,4 +43,10 @@ Route::post('addToCart/{id}','ProductController@addToCart');
 
 Route::group(['middleware' => ['web']], function () {
     //
+});
+
+Route::group(['middleware' => 'web'], function () {
+    Route::auth();
+
+    Route::get('/home', 'HomeController@index');
 });
